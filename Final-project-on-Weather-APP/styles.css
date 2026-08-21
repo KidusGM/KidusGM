@@ -73,6 +73,49 @@ button {
   align-items: center;
 }
 
+.city-filter {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.city-filter input,
+.city-filter select {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background: white;
+  outline: none;
+}
+
+.city-filter input {
+  flex: 1;
+}
+
+.city-filter input:focus,
+.city-filter select:focus {
+  border-color: var(--green);
+}
+
+.dark .city-filter input,
+.dark .city-filter select {
+  background: #172033;
+  color: white;
+  border-color: #34405a;
+}
+
+@media (max-width: 600px) {
+  .city-filter {
+    flex-direction: column;
+  }
+
+  .city-filter input,
+  .city-filter select {
+    width: 100%;
+  }
+}
+
 
 .logo {
   display: flex;
