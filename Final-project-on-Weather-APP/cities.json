@@ -1,57 +1,65 @@
 [
   {
-    "id": 1,
+    "id": "addis-ababa",
     "name": "Addis Ababa",
-    "region": "Addis Ababa",
+    "country": "Ethiopia",
+    "admin1": "Addis Ababa",
     "latitude": 9.03,
     "longitude": 38.74
   },
   {
-    "id": 2,
+    "id": "bahir-dar",
     "name": "Bahir Dar",
-    "region": "Amhara",
+    "country": "Ethiopia",
+    "admin1": "Amhara",
     "latitude": 11.59,
     "longitude": 37.39
   },
   {
-    "id": 3,
+    "id": "gondar",
     "name": "Gondar",
-    "region": "Amhara",
+    "country": "Ethiopia",
+    "admin1": "Amhara",
     "latitude": 12.60,
     "longitude": 37.47
   },
   {
-    "id": 4,
+    "id": "dire-dawa",
     "name": "Dire Dawa",
-    "region": "Dire Dawa",
+    "country": "Ethiopia",
+    "admin1": "Dire Dawa",
     "latitude": 9.60,
     "longitude": 41.85
   },
   {
-    "id": 5,
+    "id": "hawassa",
     "name": "Hawassa",
-    "region": "Sidama",
+    "country": "Ethiopia",
+    "admin1": "Sidama",
     "latitude": 7.06,
     "longitude": 38.48
   },
   {
-    "id": 6,
+    "id": "mekelle",
     "name": "Mekelle",
-    "region": "Tigray",
+    "country": "Tigray",
+    "admin1": "Tigray",
     "latitude": 13.50,
     "longitude": 39.47
   },
   {
-    "id": 7,
+    "id": "jimma",
     "name": "Jimma",
-    "region": "Oromia",
+    "country": "Oromia",
+    "admin1": "Oromia",
     "latitude": 7.67,
     "longitude": 36.83
   },
   {
-    "id": 8,
+    "id": "adama",
     "name": "Adama",
-    "region": "Oromia",
+    "country": "Oromia",
+    "admin1": "Oromia",
     "latitude": 8.54,
     "longitude": 39.27
   }
