@@ -1,6 +1,6 @@
  this is my weather App link it's has been hosted in github 
  https://kidusgm.github.io/KidusGM/
- # 🌦️ Bole Weather
+ # 🌦️ Modern Weather Website
 
 A responsive weather web application that provides **live weather conditions and forecasts for cities across Ethiopia**.
 
