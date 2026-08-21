@@ -43,7 +43,7 @@
       </h1>
 
       <h2>
-        Know the sky <span>before you go.</span>
+        ☔ Check the sky <span>before you grab the umbrella.</span>
       </h2>
 
       <p class="hero-text">
@@ -73,7 +73,7 @@
 
     <!-- ETHIOPIAN CITIES -->
 
-    <section id="citySection">
+<!--    <section id="citySection">
 
       <div class="section-heading">
 
@@ -91,10 +91,49 @@
 
       <div id="cityGrid" class="city-grid"></div>
 
-    </section>
+    </section> -->
+<section id="citySection">
+
+  <div class="section-heading">
+
+    <div>
+      <small>WEATHER NOW</small>
+      <h2>Ethiopian Cities</h2>
+    </div>
+
+    <span id="cityCount">
+      8 cities
+    </span>
+
+  </div>
+
+  <div class="city-filter">
+
+    <input
+      id="cityFilter"
+      type="text"
+      placeholder="🔎 Filter cities..."
+    >
+
+    <select id="weatherFilter">
+      <option value="all">All Weather</option>
+      <option value="clear">Clear</option>
+      <option value="cloudy">Cloudy</option>
+      <option value="rain">Rain</option>
+      <option value="storm">Storm</option>
+    </select>
+
+  </div>
+
+  <div id="cityGrid" class="city-grid"></div>
+
+</section>
 
 
     <!-- SAVED CITIES -->
+
+
+    
 
     <section class="saved-section">
 
