@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Addis Ababa",
+    "region": "Addis Ababa",
+    "latitude": 9.03,
+    "longitude": 38.74
+  },
+  {
+    "id": 2,
+    "name": "Bahir Dar",
+    "region": "Amhara",
+    "latitude": 11.59,
+    "longitude": 37.39
+  },
+  {
+    "id": 3,
+    "name": "Gondar",
+    "region": "Amhara",
+    "latitude": 12.60,
+    "longitude": 37.47
+  },
+  {
+    "id": 4,
+    "name": "Dire Dawa",
+    "region": "Dire Dawa",
+    "latitude": 9.60,
+    "longitude": 41.85
+  },
+  {
+    "id": 5,
+    "name": "Hawassa",
+    "region": "Sidama",
+    "latitude": 7.06,
+    "longitude": 38.48
+  },
+  {
+    "id": 6,
+    "name": "Mekelle",
+    "region": "Tigray",
+    "latitude": 13.50,
+    "longitude": 39.47
+  },
+  {
+    "id": 7,
+    "name": "Jimma",
+    "region": "Oromia",
+    "latitude": 7.67,
+    "longitude": 36.83
+  },
+  {
+    "id": 8,
+    "name": "Adama",
+    "region": "Oromia",
+    "latitude": 8.54,
+    "longitude": 39.27
+  }
+]
