@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bole Weather</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header class="topbar">
+
+    <div class="logo">
+      <span>☁️</span>
+      <strong>Kidus</strong>
+      <span>Weather System</span>
+    </div>
+
+    <button id="themeBtn" class="theme-btn">
+      🌙
+    </button>
+
+  </header>
+
+
+  <main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <p class="live">
+        ☀️ &nbsp; Live Weather
+      </p>
+
+      <h1>
+        K ETHIOPIA WEATHER
+      </h1>
+
+      <h2>
+        Know the sky <span>before you go.</span>
+      </h2>
+
+      <p class="hero-text">
+        Live weather conditions and forecasts for cities across Ethiopia.
+      </p>
+
+      <form id="searchForm">
+
+        <input
+          id="cityInput"
+          type="text"
+          placeholder="🔎 Search for a city..."
+          maxlength="40"
+          required
+        >
+
+        <button type="submit">
+          WEATHER NOW
+        </button>
+
+      </form>
+
+      <p id="message"></p>
+
+    </section>
+
+
+    <!-- ETHIOPIAN CITIES -->
+
+    <section id="citySection">
+
+      <div class="section-heading">
+
+        <div>
+          <small>WEATHER NOW</small>
+          <h2>Ethiopian Cities</h2>
+        </div>
+
+        <span id="cityCount">
+          8 cities
+        </span>
+
+      </div>
+
+
+      <div id="cityGrid" class="city-grid"></div>
+
+    </section>
+
+
+    <!-- SAVED CITIES -->
+
+    <section class="saved-section">
+
+      <div class="section-heading">
+
+        <div>
+          <small>YOUR COLLECTION</small>
+          <h2>Saved Cities</h2>
+        </div>
+
+        <div class="saved-actions">
+
+          <span id="savedCount">
+            0 saved
+          </span>
+
+          <button id="addCityBtn" class="add-city-btn">
+            ➕ Add City
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div id="savedCities"></div>
+
+
+      <button id="notifyBtn" class="notification-btn">
+        🔔 Enable Weather Notifications
+      </button>
+
+    </section>
+
+
+    <!-- ADD CITY PANEL -->
+
+    <section id="addCityPanel" class="add-panel hidden">
+
+      <div class="section-heading">
+
+        <div>
+          <small>NEW LOCATION</small>
+          <h2>Add a City</h2>
+        </div>
+
+        <button id="closeAddBtn" class="close-btn">
+          ✕
+        </button>
+
+      </div>
+
+
+      <p class="panel-text">
+        Search for a city and choose the correct location.
+      </p>
+
+
+      <div class="add-search">
+
+        <input
+          id="newCityInput"
+          type="text"
+          placeholder="🔎 Example: Addis Ababa"
+          maxlength="40"
+        >
+
+        <button id="findCityBtn">
+          Search
+        </button>
+
+      </div>
+
+
+      <p id="addMessage"></p>
+
+
+      <div id="searchResults"></div>
+
+    </section>
+
+
+    <!-- DETAILS -->
+
+    <section
+      id="detailsSection"
+      class="details-section hidden"
+    >
+
+      <button id="backBtn" class="back-btn">
+        ← Back to cities
+      </button>
+
+
+      <div class="section-heading">
+
+        <div>
+
+          <small>
+            CURRENT WEATHER
+          </small>
+
+          <h2 id="detailCity">
+            City
+          </h2>
+
+          <p id="detailLocation">
+            Ethiopia
+          </p>
+
+        </div>
+
+
+        <button id="saveBtn">
+          ☆ Save City
+        </button>
+
+      </div>
+
+
+      <!-- CURRENT WEATHER -->
+
+      <div class="current-card">
+
+        <div class="current-main">
+
+          <div
+            id="detailIcon"
+            class="big-icon"
+          >
+            🌤️
+          </div>
+
+
+          <div>
+
+            <p id="detailCondition">
+              Loading...
+            </p>
+
+
+            <div class="big-temperature">
+
+              <strong id="detailTemp">
+                --
+              </strong>
+
+              °C
+
+            </div>
+
+
+            <p>
+
+              Feels
+              <strong id="detailFeels">
+                --°
+              </strong>
+
+              · H:
+              <strong id="detailHigh">
+                --°
+              </strong>
+
+              · L:
+              <strong id="detailLow">
+                --°
+              </strong>
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- WEATHER DETAILS -->
+
+        <div class="weather-info">
+
+          <div>
+            <span>🌅</span>
+            <small>Sunrise</small>
+            <strong id="sunrise">--</strong>
+          </div>
+
+          <div>
+            <span>🌇</span>
+            <small>Sunset</small>
+            <strong id="sunset">--</strong>
+          </div>
+
+          <div>
+            <span>🕐</span>
+            <small>Local Time</small>
+            <strong id="localTime">--</strong>
+          </div>
+
+          <div>
+            <span>💧</span>
+            <small>Humidity</small>
+            <strong id="detailHumidity">--%</strong>
+          </div>
+
+          <div>
+            <span>💨</span>
+            <small>Wind</small>
+            <strong id="detailWind">-- km/h</strong>
+          </div>
+
+          <div>
+            <span>☀️</span>
+            <small>UV Index</small>
+            <strong id="uv">--</strong>
+          </div>
+
+          <div>
+            <span>👁</span>
+            <small>Visibility</small>
+            <strong id="visibility">--</strong>
+          </div>
+
+          <div>
+            <span>🌡</span>
+            <small>Pressure</small>
+            <strong id="pressure">--</strong>
+          </div>
+
+          <div>
+            <span>🌫</span>
+            <small>Dew Point</small>
+            <strong id="dewPoint">--</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- HOURLY -->
+
+      <section class="forecast-section">
+
+        <small>
+          HOURLY FORECAST
+        </small>
+
+        <h2>
+          Hourly Forecast
+        </h2>
+
+        <div
+          id="hourly"
+          class="hourly"
+        ></div>
+
+      </section>
+
+
+      <!-- DAILY -->
+
+      <section class="forecast-section">
+
+        <small>
+          7-DAY FORECAST
+        </small>
+
+        <h2>
+          7-Day Forecast
+        </h2>
+
+        <div
+          id="daily"
+          class="daily"
+        ></div>
+
+      </section>
+
+
+      <!-- TEMPERATURE CHART -->
+
+      <section class="chart-section">
+
+        <small>
+          TEMPERATURE
+        </small>
+
+        <h2>
+          Temperature Trend
+        </h2>
+
+        <div class="chart-box">
+          <canvas id="temperatureChart"></canvas>
+        </div>
+
+      </section>
+
+
+      <!-- RAIN CHART -->
+
+      <section class="chart-section">
+
+        <small>
+          PRECIPITATION
+        </small>
+
+        <h2>
+          Rain Probability
+        </h2>
+
+        <div class="chart-box">
+          <canvas id="rainChart"></canvas>
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <p>
+      ☁️ Bole Weather · Weather data by Open-Meteo
+    </p>
+
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
