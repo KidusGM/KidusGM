@@ -1,58 +1,142 @@
-const $ = id => document.getElementById(id);
+const weather = id => document.getElementById(id);
 
 const API = {
   geo: "https://geocoding-api.open-meteo.com/v1/search",
   weather: "https://api.open-meteo.com/v1/forecast"
 };
 
-const defaultCities = [
-  "Addis Ababa",
-  "Bahir Dar",
-  "Gondar",
-  "Dire Dawa",
-  "Hawassa",
-  "Mekelle",
-  "Jimma",
-  "Adama"
-];
-
 const state = {
   cities: JSON.parse(localStorage.getItem("weatherCities") || "[]"),
   current: null,
-  theme: localStorage.getItem("weatherTheme") || "light"
+  theme: localStorage.getItem("weatherTheme") || "light",
+  weatherCities: []
 };
 
 let tempChart;
 let rainChart;
+let defaultCities = [];
 
 const codes = {
-  0: ["☀️", "Clear Sky"],
-  1: ["🌤️", "Mainly Clear"],
-  2: ["⛅", "Partly Cloudy"],
-  3: ["☁️", "Cloudy"],
-  45: ["🌫️", "Fog"],
-  48: ["🌫️", "Rime Fog"],
-  51: ["🌦️", "Light Drizzle"],
-  53: ["🌦️", "Drizzle"],
-  55: ["🌧️", "Heavy Drizzle"],
-  61: ["🌧️", "Light Rain"],
-  63: ["🌧️", "Rain"],
-  65: ["🌧️", "Heavy Rain"],
-  71: ["🌨️", "Light Snow"],
-  73: ["🌨️", "Snow"],
-  75: ["❄️", "Heavy Snow"],
-  80: ["🌦️", "Rain Showers"],
-  81: ["🌧️", "Rain Showers"],
-  82: ["⛈️", "Heavy Showers"],
-  95: ["⛈️", "Thunderstorm"],
-  96: ["⛈️", "Thunderstorm + Hail"],
-  99: ["⛈️", "Thunderstorm + Hail"]
+  0: ["☀️", "Clear Sky", "clear"],
+  1: ["🌤️", "Mainly Clear", "clear"],
+  2: ["⛅", "Partly Cloudy", "clear"],
+  3: ["☁️", "Cloudy", "cloudy"],
+  45: ["🌫️", "Fog", "cloudy"],
+  48: ["🌫️", "Rime Fog", "cloudy"],
+  51: ["🌦️", "Light Drizzle", "rain"],
+  53: ["🌦️", "Drizzle", "rain"],
+  55: ["🌧️", "Heavy Drizzle", "rain"],
+  61: ["🌧️", "Light Rain", "rain"],
+  63: ["🌧️", "Rain", "rain"],
+  65: ["🌧️", "Heavy Rain", "rain"],
+  71: ["🌨️", "Light Snow", "rain"],
+  73: ["🌨️", "Snow", "rain"],
+  75: ["❄️", "Heavy Snow", "rain"],
+  80: ["🌦️", "Rain Showers", "rain"],
+  81: ["🌧️", "Rain Showers", "rain"],
+  82: ["⛈️", "Heavy Showers", "rain"],
+  95: ["⛈️", "Thunderstorm", "storm"],
+  96: ["⛈️", "Thunderstorm + Hail", "storm"],
+  99: ["⛈️", "Thunderstorm + Hail", "storm"]
 };
 
+/* =========================
+   JAVASCRIPT STYLES
+========================= */
+
+const style = document.createElement("style");
+
+style.textContent = `
+  .view-weather-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--green, #198754);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+  }
+
+  .view-weather-btn:hover {
+    opacity: .85;
+    transform: translateY(-1px);
+  }
+
+  .view-weather-btn:active {
+    transform: translateY(0);
+  }
+
+  .city-filter {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .city-filter input,
+  .city-filter select {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font: inherit;
+    outline: none;
+  }
+
+  .city-filter input {
+    flex: 1;
+  }
+
+  .city-filter select {
+    min-width: 170px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .city-filter input:focus,
+  .city-filter select:focus {
+    border-color: var(--green, #198754);
+  }
+
+  @media (max-width: 600px) {
+    .city-filter {
+      flex-direction: column;
+    }
+
+    .city-filter select {
+      width: 100%;
+    }
+  }
+`;
+
+document.head.appendChild(style);
 
 /* =========================
-   LOCAL STORAGE
+   HELPERS
 ========================= */
+
+async function getData(url) {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Request failed");
+  }
+
+  return response.json();
+}
+
+function cityData(city) {
+  return {
+    id: city.id,
+    name: city.name,
+    country: city.country,
+    admin1: city.admin1 || "",
+    latitude: city.latitude,
+    longitude: city.longitude
+  };
+}
 
 function saveCities() {
   localStorage.setItem(
@@ -68,131 +152,184 @@ function saveTheme() {
   );
 }
 
+function showMessage(text) {
+  weather("message").textContent = text;
+}
+
+function showAddMessage(text) {
+  weather("addMessage").textContent = text;
+}
+
+function formatTime(time) {
+  return new Date(time).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+/* =========================
+   LOAD CITIES.JSON
+========================= */
+
+async function loadCityList() {
+  try {
+    const data = await getData("cities.json");
+
+    /*
+      Supports:
+
+      [
+        "Addis Ababa",
+        "Bahir Dar"
+      ]
+
+      OR:
+
+      [
+        { "name": "Addis Ababa" },
+        { "name": "Bahir Dar" }
+      ]
+    */
+
+    defaultCities = data
+      .map(city =>
+        typeof city === "string"
+          ? city
+          : city.name
+      )
+      .filter(Boolean);
+
+    await loadAllCities();
+
+  } catch (error) {
+    console.error("Could not load cities.json:", error);
+
+    weather("cityGrid").innerHTML = `
+      <div class="city-card">
+        <h3>⚠️ Could not load cities</h3>
+        <p>Make sure cities.json is in the same folder as app.js.</p>
+      </div>
+    `;
+  }
+}
 
 /* =========================
    SEARCH CITY
 ========================= */
 
-async function findCity(name) {
-
+async function findCity(name, addMode = false) {
   name = name.trim();
 
   if (!name) {
-    showAddMessage("Please enter a city name.");
-    return;
+    return addMode
+      ? showAddMessage("Please enter a city name.")
+      : showMessage("Please enter a city name.");
   }
 
-  showAddMessage("🔎 Searching...");
+  addMode
+    ? showAddMessage("🔎 Searching...")
+    : showMessage("🔎 Searching...");
 
   try {
-
-    const response = await fetch(
+    const data = await getData(
       `${API.geo}?name=${encodeURIComponent(name)}&count=5&language=en&format=json`
     );
 
-    const data = await response.json();
-
     if (!data.results?.length) {
-      showAddMessage("❌ City not found. Try another name.");
-      $("searchResults").innerHTML = "";
+      addMode
+        ? showAddMessage("❌ City not found. Try another name.")
+        : showMessage("❌ City not found. Try another name.");
+
+      if (addMode) {
+        weather("searchResults").innerHTML = "";
+      }
+
       return;
     }
 
-    renderSearchResults(data.results);
+    if (addMode) {
+      renderSearchResults(data.results);
+      showAddMessage("");
+    } else {
+      const city = cityData(data.results[0]);
 
-    showAddMessage("");
+      showMessage(`🌦️ Loading ${city.name}...`);
+
+      await loadWeather(city);
+    }
 
   } catch {
-    showAddMessage(
-      "⚠️ Could not connect to the location service."
-    );
+    addMode
+      ? showAddMessage(
+          "⚠️ Could not connect to the location service."
+        )
+      : showMessage(
+          "⚠️ Could not connect to the location service."
+        );
   }
 }
-
 
 /* =========================
    SEARCH RESULTS
 ========================= */
 
 function renderSearchResults(results) {
+  weather("searchResults").innerHTML =
+    results.map(city => `
+      <div class="search-result">
 
-  $("searchResults").innerHTML = results.map(city => `
+        <div>
+          <strong>${city.name}</strong>
 
-    <div class="search-result">
+          <p>
+            ${city.admin1 || ""}
+            ${city.admin1 ? ", " : ""}
+            ${city.country}
+          </p>
+        </div>
 
-      <div>
-        <strong>${city.name}</strong>
+        <button
+          class="result-add"
+          onclick='addNewCity(${JSON.stringify(city)})'>
+          ➕ Add
+        </button>
 
-        <p>
-          ${city.admin1 || ""}
-          ${city.admin1 ? ", " : ""}
-          ${city.country}
-        </p>
       </div>
-
-      <button
-        class="result-add"
-        onclick='addNewCity(${JSON.stringify(city)})'>
-        ➕ Add
-      </button>
-
-    </div>
-
-  `).join("");
+    `).join("");
 }
-
 
 /* =========================
    ADD CITY
 ========================= */
 
 async function addNewCity(city) {
-
-  const exists = state.cities.some(
-    item => item.id === city.id
-  );
-
-  if (exists) {
+  if (
+    state.cities.some(
+      item => item.id === city.id
+    )
+  ) {
     showAddMessage("⭐ This city is already saved.");
     return;
   }
 
-  const newCity = {
-    id: city.id,
-    name: city.name,
-    country: city.country,
-    admin1: city.admin1 || "",
-    latitude: city.latitude,
-    longitude: city.longitude
-  };
+  const newCity = cityData(city);
 
   state.cities.push(newCity);
 
   saveCities();
-
   renderSaved();
 
-  showAddMessage(
-    `✅ ${city.name} added!`
-  );
+  showAddMessage(`✅ ${city.name} added!`);
 
-  /*
-    IMPORTANT:
-    Reload the main city grid so the
-    new city appears with the others.
-  */
   await loadAllCities();
-
   await loadWeather(newCity);
 }
 
-
 /* =========================
-   LOAD WEATHER
+   LOAD WEATHER DETAILS
 ========================= */
 
 async function loadWeather(city) {
-
   showMessage("🌦️ Loading weather...");
 
   const url =
@@ -211,7 +348,9 @@ async function loadWeather(city) {
     `&hourly=` +
     `temperature_2m,` +
     `weather_code,` +
-    `precipitation_probability` +
+    `precipitation_probability,` +
+    `visibility,` +
+    `dew_point_2m` +
 
     `&daily=` +
     `weather_code,` +
@@ -225,9 +364,7 @@ async function loadWeather(city) {
     `&timezone=auto`;
 
   try {
-
-    const response = await fetch(url);
-    const data = await response.json();
+    const data = await getData(url);
 
     state.current = {
       city,
@@ -241,85 +378,55 @@ async function loadWeather(city) {
   }
 }
 
-
 /* =========================
    LOAD ALL CITIES
 ========================= */
 
 async function loadAllCities() {
-
-  $("cityGrid").innerHTML = `
+  weather("cityGrid").innerHTML = `
     <div class="city-card">
       Loading cities...
     </div>
   `;
 
-  /*
-    Start with the original 8 cities.
-  */
   const names = [...defaultCities];
 
-  /*
-    Add cities from Local Storage.
-  */
   state.cities.forEach(city => {
-
-    const alreadyExists = names.some(
-      name =>
-        name.toLowerCase() === city.name.toLowerCase()
-    );
-
-    if (!alreadyExists) {
+    if (
+      !names.some(
+        name =>
+          name.toLowerCase() ===
+          city.name.toLowerCase()
+      )
+    ) {
       names.push(city.name);
     }
-
   });
-
 
   const results = [];
 
-  /*
-    Get coordinates for every city.
-  */
   for (const name of names) {
-
     try {
-
-      /*
-        If this city is already saved,
-        use its stored coordinates.
-      */
       let city = state.cities.find(
         item =>
-          item.name.toLowerCase() === name.toLowerCase()
+          item.name.toLowerCase() ===
+          name.toLowerCase()
       );
 
-
-      /*
-        Otherwise find the coordinates
-        automatically.
-      */
       if (!city) {
-
-        const response = await fetch(
+        const data = await getData(
           `${API.geo}?name=${encodeURIComponent(name)}&count=1&language=en&format=json`
         );
-
-        const data = await response.json();
 
         if (!data.results?.length) {
           continue;
         }
 
-        city = data.results[0];
+        city = cityData(data.results[0]);
       }
 
-
-      const weatherResponse = await fetch(
-
-        `${API.weather}` +
-
-        `?latitude=${city.latitude}` +
+      const url =
+        `${API.weather}?latitude=${city.latitude}` +
         `&longitude=${city.longitude}` +
 
         `&current=` +
@@ -333,110 +440,140 @@ async function loadAllCities() {
         `temperature_2m_max,` +
         `temperature_2m_min` +
 
-        `&timezone=auto`
+        `&timezone=auto`;
 
-      );
-
-
-      const weather =
-        await weatherResponse.json();
-
+      const weatherData = await getData(url);
 
       results.push({
         city,
-        weather
+        weather: weatherData
       });
 
-
     } catch {
-
-      console.log(
-        `Could not load ${name}`
-      );
-
+      console.log(`Could not load ${name}`);
     }
   }
 
+  state.weatherCities = results;
 
   renderCities(results);
 }
 
+/* =========================
+   CITY FILTER
+========================= */
+
+function filterCities() {
+  const citySearch =
+    weather("cityFilter")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const weatherType =
+    weather("weatherFilter").value;
+
+  const filtered =
+    state.weatherCities.filter(item => {
+
+      const city = item.city;
+      const current = item.weather.current;
+
+      const searchableText = `
+        ${city.name}
+        ${city.admin1 || ""}
+        ${city.country || ""}
+      `.toLowerCase();
+
+      const matchesCity =
+        searchableText.includes(citySearch);
+
+      const weatherInfo =
+        codes[current.weather_code] ||
+        ["🌤️", "Unknown", "cloudy"];
+
+      const type = weatherInfo[2];
+
+      const matchesWeather =
+        weatherType === "all" ||
+        type === weatherType;
+
+      return matchesCity && matchesWeather;
+    });
+
+  renderCities(filtered, true);
+}
 
 /* =========================
    CITY CARDS
 ========================= */
 
-function renderCities(results) {
+function renderCities(results, filtered = false) {
+  weather("cityCount").textContent =
+    filtered
+      ? `${results.length} cities found`
+      : `${results.length} cities`;
 
-  $("cityCount").textContent =
-    `${results.length} cities`;
+  if (!results.length) {
+    weather("cityGrid").innerHTML = `
+      <div class="city-card">
+        <h3>🔎 No cities found</h3>
+        <p>Try another city or weather condition.</p>
+      </div>
+    `;
 
+    return;
+  }
 
-  $("cityGrid").innerHTML =
-    results.map(({ city, weather }) => {
+  weather("cityGrid").innerHTML =
+    results.map(({ city, weather: data }) => {
 
-      const current = weather.current;
+      const current = data.current;
 
       const code =
         codes[current.weather_code] ||
-        ["🌤️", "Unknown"];
-
+        ["🌤️", "Unknown", "cloudy"];
 
       const saved =
         state.cities.some(
           item => item.id === city.id
         );
 
-
       return `
-
         <article class="city-card">
 
           <button
             class="star"
             onclick='toggleSave(${JSON.stringify(city)})'>
-
             ${saved ? "★" : "☆"}
-
           </button>
 
-
-          <h3>
-            ${city.name}
-          </h3>
-
+          <h3>${city.name}</h3>
 
           <p class="region">
             ${city.admin1 || city.country}
           </p>
 
-
           <div class="weather-icon">
             ${code[0]}
           </div>
-
 
           <div class="city-temp">
             ${Math.round(current.temperature_2m)}°
           </div>
 
-
           <p class="condition">
             ${code[1]}
           </p>
-
 
           <div class="city-details">
 
             <span>
               Feels like
               <strong>
-                ${Math.round(
-                  current.apparent_temperature
-                )}°C
+                ${Math.round(current.apparent_temperature)}°C
               </strong>
             </span>
-
 
             <span>
               Humidity
@@ -445,210 +582,171 @@ function renderCities(results) {
               </strong>
             </span>
 
-
             <span>
               Wind
               <strong>
-                ${Math.round(
-                  current.wind_speed_10m
-                )} km/h
+                ${Math.round(current.wind_speed_10m)} km/h
               </strong>
             </span>
 
           </div>
 
-
           <p class="updated">
-
             Updated
             ${new Date().toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit"
             })}
-
           </p>
 
-
           <button
-            onclick='loadWeather(${JSON.stringify(city)})'
-            style="
-              margin-top:12px;
-              width:100%;
-              padding:10px;
-              border:0;
-              border-radius:8px;
-              background:var(--green);
-              color:white;
-            ">
-
+            class="view-weather-btn"
+            onclick='loadWeather(${JSON.stringify(city)})'>
             View Weather
-
           </button>
 
         </article>
-
       `;
-
     }).join("");
 }
-
 
 /* =========================
    WEATHER DETAILS
 ========================= */
 
 function showDetails(city, data) {
-
   const current = data.current;
   const daily = data.daily;
 
   const code =
     codes[current.weather_code] ||
-    ["🌤️", "Unknown"];
+    ["🌤️", "Unknown", "cloudy"];
 
-
-  $("detailCity").textContent =
+  weather("detailCity").textContent =
     city.name;
 
-
-  $("detailLocation").textContent =
+  weather("detailLocation").textContent =
     `${city.admin1 || city.country}, ${city.country}`;
 
-
-  $("detailIcon").textContent =
+  weather("detailIcon").textContent =
     code[0];
 
-
-  $("detailCondition").textContent =
+  weather("detailCondition").textContent =
     code[1];
 
-
-  $("detailTemp").textContent =
+  weather("detailTemp").textContent =
     Math.round(current.temperature_2m);
 
+  weather("detailFeels").textContent =
+    Math.round(current.apparent_temperature) + "°";
 
-  $("detailFeels").textContent =
-    Math.round(
-      current.apparent_temperature
-    ) + "°";
+  weather("detailHigh").textContent =
+    Math.round(daily.temperature_2m_max[0]) + "°";
 
+  weather("detailLow").textContent =
+    Math.round(daily.temperature_2m_min[0]) + "°";
 
-  $("detailHigh").textContent =
-    Math.round(
-      daily.temperature_2m_max[0]
-    ) + "°";
-
-
-  $("detailLow").textContent =
-    Math.round(
-      daily.temperature_2m_min[0]
-    ) + "°";
-
-
-  $("detailHumidity").textContent =
+  weather("detailHumidity").textContent =
     current.relative_humidity_2m + "%";
 
+  weather("detailWind").textContent =
+    Math.round(current.wind_speed_10m) + " km/h";
 
-  $("detailWind").textContent =
-    Math.round(
-      current.wind_speed_10m
-    ) + " km/h";
+  weather("pressure").textContent =
+    Math.round(current.surface_pressure) + " hPa";
 
-
-  $("pressure").textContent =
-    Math.round(
-      current.surface_pressure
-    ) + " hPa";
-
-
-  $("uv").textContent =
+  weather("uv").textContent =
     daily.uv_index_max[0];
 
-
-  $("sunrise").textContent =
+  weather("sunrise").textContent =
     formatTime(daily.sunrise[0]);
 
-
-  $("sunset").textContent =
+  weather("sunset").textContent =
     formatTime(daily.sunset[0]);
 
-
-  $("localTime").textContent =
+  weather("localTime").textContent =
     new Date().toLocaleTimeString();
 
+  /*
+    Open-Meteo provides visibility and
+    dew point through hourly data.
 
-  $("visibility").textContent =
-    "--";
+    The first hourly value represents
+    the current hour.
+  */
 
+  const visibility =
+    data.hourly.visibility?.[0];
 
-  $("dewPoint").textContent =
-    "--";
+  const dewPoint =
+    data.hourly.dew_point_2m?.[0];
 
+  if (
+    visibility !== undefined &&
+    visibility !== null
+  ) {
+    weather("visibility").textContent =
+      visibility >= 1000
+        ? `${(visibility / 1000).toFixed(1)} km`
+        : `${Math.round(visibility)} m`;
+  } else {
+    weather("visibility").textContent = "--";
+  }
+
+  if (
+    dewPoint !== undefined &&
+    dewPoint !== null
+  ) {
+    weather("dewPoint").textContent =
+      `${Math.round(dewPoint)}°C`;
+  } else {
+    weather("dewPoint").textContent = "--";
+  }
 
   renderHourly(data);
-
   renderDaily(data);
-
   renderCharts(data);
-
   updateSaveButton(city);
 
-
-  $("detailsSection")
+  weather("detailsSection")
     .classList
     .remove("hidden");
 
-
-  $("detailsSection")
+  weather("detailsSection")
     .scrollIntoView({
       behavior: "smooth"
     });
 
-
   showMessage("");
 }
-
 
 /* =========================
    HOURLY
 ========================= */
 
 function renderHourly(data) {
-
-  $("hourly").innerHTML =
+  weather("hourly").innerHTML =
     data.hourly.time
       .slice(0, 13)
       .map((time, i) => {
 
         const code =
-          codes[
-            data.hourly.weather_code[i]
-          ] || ["🌤️"];
-
+          codes[data.hourly.weather_code[i]] ||
+          ["🌤️"];
 
         const hour =
           i === 0
             ? "Now"
-            : new Date(time)
-                .toLocaleTimeString(
-                  [],
-                  {
-                    hour: "numeric"
-                  }
-                );
-
+            : new Date(time).toLocaleTimeString([], {
+                hour: "numeric"
+              });
 
         return `
-
           <div class="hour-card">
 
-            <strong>
-              ${hour}
-            </strong>
+            <strong>${hour}</strong>
 
-            <span>
-              ${code[0]}
-            </span>
+            <span>${code[0]}</span>
 
             <strong>
               ${Math.round(
@@ -657,319 +755,247 @@ function renderHourly(data) {
             </strong>
 
             <p>
-              💧
-              ${data.hourly.precipitation_probability[i]}%
+              💧 ${data.hourly.precipitation_probability[i]}%
             </p>
 
           </div>
-
         `;
-
-      }).join("");
+      })
+      .join("");
 }
-
 
 /* =========================
    DAILY
 ========================= */
 
 function renderDaily(data) {
+  weather("daily").innerHTML =
+    data.daily.time
+      .map((date, i) => {
 
-  $("daily").innerHTML =
-    data.daily.time.map((date, i) => {
+        const code =
+          codes[data.daily.weather_code[i]] ||
+          ["🌤️", "Unknown"];
 
-      const code =
-        codes[
-          data.daily.weather_code[i]
-        ] || ["🌤️", "Unknown"];
-
-
-      const day =
-        i === 0
-          ? "Today"
-          : new Date(date)
-              .toLocaleDateString(
+        const day =
+          i === 0
+            ? "Today"
+            : new Date(date).toLocaleDateString(
                 "en",
                 {
                   weekday: "short"
                 }
               );
 
+        return `
+          <div class="day-card">
 
-      return `
+            <strong>${day}</strong>
 
-        <div class="day-card">
+            <span>${code[0]}</span>
 
-          <strong>
-            ${day}
-          </strong>
+            <strong>
+              ${Math.round(
+                data.daily.temperature_2m_max[i]
+              )}°
+            </strong>
 
-          <span>
-            ${code[0]}
-          </span>
+            <p>${code[1]}</p>
 
-          <strong>
-            ${Math.round(
-              data.daily.temperature_2m_max[i]
-            )}°
-          </strong>
+            <p>
+              💧 ${data.daily.precipitation_probability_max[i]}%
+            </p>
 
-          <p>
-            ${code[1]}
-          </p>
+            <small>
+              ${Math.round(
+                data.daily.temperature_2m_min[i]
+              )}°
+              /
+              ${Math.round(
+                data.daily.temperature_2m_max[i]
+              )}°
+            </small>
 
-          <p>
-            💧
-            ${data.daily.precipitation_probability_max[i]}%
-          </p>
-
-          <small>
-            ${Math.round(
-              data.daily.temperature_2m_min[i]
-            )}°
-            /
-            ${Math.round(
-              data.daily.temperature_2m_max[i]
-            )}°
-          </small>
-
-        </div>
-
-      `;
-
-    }).join("");
+          </div>
+        `;
+      })
+      .join("");
 }
-
 
 /* =========================
    CHARTS
 ========================= */
 
 function renderCharts(data) {
-
-  if (tempChart)
+  if (tempChart) {
     tempChart.destroy();
+  }
 
-  if (rainChart)
+  if (rainChart) {
     rainChart.destroy();
-
+  }
 
   const labels =
     data.hourly.time
       .slice(0, 12)
       .map(time =>
-        new Date(time)
-          .toLocaleTimeString(
-            [],
-            {
-              hour: "numeric"
-            }
-          )
+        new Date(time).toLocaleTimeString([], {
+          hour: "numeric"
+        })
       );
 
-
   const temperatures =
-    data.hourly.temperature_2m
-      .slice(0, 12);
-
+    data.hourly.temperature_2m.slice(0, 12);
 
   const rain =
     data.hourly.precipitation_probability
       .slice(0, 12);
 
+  tempChart = new Chart(
+    weather("temperatureChart"),
+    {
+      type: "line",
 
-  tempChart =
-    new Chart(
-      $("temperatureChart"),
-      {
-        type: "line",
+      data: {
+        labels,
 
-        data: {
-          labels,
+        datasets: [{
+          label: "Temperature °C",
+          data: temperatures,
+          tension: 0.4,
+          fill: false
+        }]
+      },
 
-          datasets: [{
-            label: "Temperature °C",
-            data: temperatures,
-            tension: .4,
-            fill: false
-          }]
-        },
-
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
       }
-    );
+    }
+  );
 
+  rainChart = new Chart(
+    weather("rainChart"),
+    {
+      type: "line",
 
-  rainChart =
-    new Chart(
-      $("rainChart"),
-      {
-        type: "line",
+      data: {
+        labels,
 
-        data: {
-          labels,
+        datasets: [{
+          label: "Rain Probability %",
+          data: rain,
+          tension: 0.4,
+          fill: true
+        }]
+      },
 
-          datasets: [{
-            label: "Rain Probability %",
-            data: rain,
-            tension: .4,
-            fill: true
-          }]
-        },
-
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
       }
-    );
+    }
+  );
 }
-
 
 /* =========================
    SAVE / REMOVE
 ========================= */
 
 function toggleSave(city) {
-
   const exists =
     state.cities.some(
       item => item.id === city.id
     );
 
-
   if (exists) {
-
     state.cities =
       state.cities.filter(
         item => item.id !== city.id
       );
 
-    showMessage(
-      `${city.name} removed.`
-    );
+    showMessage(`${city.name} removed.`);
 
   } else {
-
-    state.cities.push({
-      id: city.id,
-      name: city.name,
-      country: city.country,
-      admin1: city.admin1 || "",
-      latitude: city.latitude,
-      longitude: city.longitude
-    });
-
-    showMessage(
-      `${city.name} saved!`
+    state.cities.push(
+      cityData(city)
     );
+
+    showMessage(`${city.name} saved!`);
   }
 
-
   saveCities();
-
   renderSaved();
-
-  /*
-    Rebuild the main city grid.
-    This is what makes the added city
-    appear together with the others.
-  */
   loadAllCities();
-
   updateSaveButton(city);
 }
 
-
 function removeCity(id) {
-
   state.cities =
     state.cities.filter(
       city => city.id !== id
     );
 
-
   saveCities();
-
   renderSaved();
-
   loadAllCities();
 }
-
 
 /* =========================
    SAVED CITIES
 ========================= */
 
 function renderSaved() {
-
-  $("savedCount").textContent =
+  weather("savedCount").textContent =
     `${state.cities.length} saved`;
 
+  weather("savedCities").innerHTML =
+    state.cities
+      .map(city => `
+        <div class="saved-city">
 
-  $("savedCities").innerHTML =
-    state.cities.map(city => `
+          <div class="saved-left">
 
-      <div class="saved-city">
+            <div class="saved-icon">
+              🌦️
+            </div>
 
-        <div class="saved-left">
+            <div>
+              <h3>${city.name}</h3>
 
-          <div class="saved-icon">
-            🌦️
+              <p>
+                ${city.admin1 || city.country}
+              </p>
+            </div>
+
           </div>
 
-          <div>
+          <div class="saved-buttons">
 
-            <h3>
-              ${city.name}
-            </h3>
+            <button
+              onclick='loadWeather(${JSON.stringify(city)})'>
+              View
+            </button>
 
-            <p>
-              ${city.admin1 || city.country}
-            </p>
+            <button
+              class="delete-btn"
+              onclick="removeCity(${city.id})">
+              🗑️
+            </button>
 
           </div>
 
         </div>
-
-
-        <div class="saved-buttons">
-
-          <button
-            onclick='loadWeather(${JSON.stringify(city)})'>
-
-            View
-
-          </button>
-
-
-          <button
-            class="delete-btn"
-            onclick="removeCity(${city.id})">
-
-            🗑️
-
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
+      `)
+      .join("");
 }
-
 
 /* =========================
    NOTIFICATIONS
 ========================= */
 
 async function enableNotifications() {
-
   if (!("Notification" in window)) {
-
     showMessage(
       "Your browser does not support notifications."
     );
@@ -977,20 +1003,15 @@ async function enableNotifications() {
     return;
   }
 
-
   const permission =
     await Notification.requestPermission();
 
-
   if (permission === "granted") {
 
-    new Notification(
-      "🌦️ Bole Weather",
-      {
-        body:
-          "Weather notifications are now enabled!"
-      }
-    );
+    new Notification("🌦️ Bole Weather", {
+      body:
+        "Weather notifications are now enabled!"
+    });
 
     showMessage(
       "🔔 Notifications enabled."
@@ -1004,232 +1025,190 @@ async function enableNotifications() {
   }
 }
 
-
 /* =========================
    DARK MODE
 ========================= */
 
 function applyTheme() {
-
   document.body.classList.toggle(
     "dark",
     state.theme === "dark"
   );
 
-
-  $("themeBtn").textContent =
+  weather("themeBtn").textContent =
     state.theme === "dark"
       ? "☀️"
       : "🌙";
 }
 
-
 function toggleTheme() {
-
   state.theme =
     state.theme === "light"
       ? "dark"
       : "light";
 
-
   saveTheme();
-
   applyTheme();
 }
-
 
 /* =========================
    ADD CITY PANEL
 ========================= */
 
 function openAddCity() {
-
-  $("addCityPanel")
+  weather("addCityPanel")
     .classList
     .remove("hidden");
 
+  weather("newCityInput").focus();
 
-  $("newCityInput").focus();
-
-
-  $("addCityPanel")
+  weather("addCityPanel")
     .scrollIntoView({
       behavior: "smooth"
     });
 }
 
-
 function closeAddCity() {
-
-  $("addCityPanel")
+  weather("addCityPanel")
     .classList
     .add("hidden");
 
+  weather("searchResults").innerHTML = "";
 
-  $("searchResults").innerHTML = "";
-
-  $("newCityInput").value = "";
+  weather("newCityInput").value = "";
 }
-
-
-function showAddMessage(text) {
-
-  $("addMessage").textContent = text;
-}
-
 
 /* =========================
    SAVE BUTTON
 ========================= */
 
 function updateSaveButton(city) {
-
   const saved =
     state.cities.some(
       item => item.id === city.id
     );
 
-
-  $("saveBtn").textContent =
+  weather("saveBtn").textContent =
     saved
       ? "★ Saved"
       : "☆ Save City";
 }
 
-
-$("saveBtn").addEventListener(
-  "click",
-  () => {
-
-    if (!state.current)
-      return;
-
-    toggleSave(
-      state.current.city
-    );
-
-  }
-);
-
-
-/* =========================
-   HELPERS
-========================= */
-
-function formatTime(time) {
-
-  return new Date(time)
-    .toLocaleTimeString(
-      [],
-      {
-        hour: "numeric",
-        minute: "2-digit"
-      }
-    );
-}
-
-
-function showMessage(text) {
-
-  $("message").textContent = text;
-}
-
-
 /* =========================
    EVENTS
 ========================= */
 
-$("searchForm").addEventListener(
-  "submit",
-  e => {
+weather("saveBtn")
+  .addEventListener("click", () => {
+
+    if (state.current) {
+      toggleSave(
+        state.current.city
+      );
+    }
+
+  });
+
+weather("searchForm")
+  .addEventListener("submit", e => {
 
     e.preventDefault();
 
     findCity(
-      $("cityInput").value
+      weather("cityInput").value
     );
 
-  }
-);
+  });
 
+weather("addCityBtn")
+  .addEventListener(
+    "click",
+    openAddCity
+  );
 
-$("addCityBtn").addEventListener(
-  "click",
-  openAddCity
-);
+weather("closeAddBtn")
+  .addEventListener(
+    "click",
+    closeAddCity
+  );
 
-
-$("closeAddBtn").addEventListener(
-  "click",
-  closeAddCity
-);
-
-
-$("findCityBtn").addEventListener(
-  "click",
-  () => {
-
-    findCity(
-      $("newCityInput").value
-    );
-
-  }
-);
-
-
-$("newCityInput").addEventListener(
-  "keydown",
-  e => {
-
-    if (e.key === "Enter") {
-
-      e.preventDefault();
-
+weather("findCityBtn")
+  .addEventListener(
+    "click",
+    () =>
       findCity(
-        $("newCityInput").value
-      );
+        weather("newCityInput").value,
+        true
+      )
+  );
+
+weather("newCityInput")
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if (e.key === "Enter") {
+
+        e.preventDefault();
+
+        findCity(
+          weather("newCityInput").value,
+          true
+        );
+      }
 
     }
+  );
 
-  }
-);
+weather("notifyBtn")
+  .addEventListener(
+    "click",
+    enableNotifications
+  );
 
+weather("themeBtn")
+  .addEventListener(
+    "click",
+    toggleTheme
+  );
 
-$("notifyBtn").addEventListener(
-  "click",
-  enableNotifications
-);
+weather("backBtn")
+  .addEventListener(
+    "click",
+    () => {
 
+      weather("detailsSection")
+        .classList
+        .add("hidden");
 
-$("themeBtn").addEventListener(
-  "click",
-  toggleTheme
-);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
+    }
+  );
 
-$("backBtn").addEventListener(
-  "click",
-  () => {
+/* =========================
+   FILTER EVENTS
+========================= */
 
-    $("detailsSection")
-      .classList
-      .add("hidden");
+weather("cityFilter")
+  .addEventListener(
+    "input",
+    filterCities
+  );
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-  }
-);
-
+weather("weatherFilter")
+  .addEventListener(
+    "change",
+    filterCities
+  );
 
 /* =========================
    START APP
 ========================= */
 
 applyTheme();
-
 renderSaved();
-
-loadAllCities();
+loadCityList();
