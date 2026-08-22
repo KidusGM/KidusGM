@@ -1,5 +1,7 @@
  this is my weather App link it's has been hosted in github 
  https://kidusgm.github.io/KidusGM/
+my Loom video link
+https://www.loom.com/share/aefb843f6de54786b824ac7aac2050e1
  # 🌦️ Modern Weather Website
 
 A responsive weather web application that provides **live weather conditions and forecasts for cities across Ethiopia**.
