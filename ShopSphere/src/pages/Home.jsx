@@ -46,7 +46,7 @@ function Home() {
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow">
-            THE EVERYDAY EDIT
+            THE EVERYDAY Updated
           </span>
 
           <h1>

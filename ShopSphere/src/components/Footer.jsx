@@ -18,7 +18,7 @@ function Footer() {
       </div>
 
       <div>
-        <strong>ShopSphere © 2026</strong>
+        <strong>ShopSphere © 2026 Allright Reserved</strong>
         <p>Built with React + DummyJSON</p>
       </div>
     </footer>

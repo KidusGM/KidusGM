@@ -9,10 +9,10 @@ function Navbar() {
   return (
     <header className="navbar">
       <Link to="/" className="logo">
-        <span className="logo-mark">S</span>
+        <span className="logo-mark">K</span>
 
         <span>
-          Shop<span>Sphere</span>
+         Kidus-Shop<span>Sphere</span>
         </span>
       </Link>
 
