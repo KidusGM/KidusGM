@@ -1,3 +1,5 @@
+https://shopingsphere.vercel.app/
+
 # ShopSphere — Online Shopping Application
 
 ## Project Overview
@@ -121,32 +123,7 @@ ShopSphere is a React-based e-commerce application that allows users to browse p
 
 ## Project Structure
 
-```text
-src/
-│
-├── components/
-│   ├── Navbar.jsx
-│   ├── Footer.jsx
-│   ├── ProductCard.jsx
-│   └── ...
-│
-├── context/
-│   ├── CartContext.jsx
-│   └── ProductContext.jsx
-│
-├── pages/
-│   ├── Home.jsx
-│   ├── Products.jsx
-│   ├── ProductDetails.jsx
-│   ├── Categories.jsx
-│   ├── Cart.jsx
-│   ├── About.jsx
-│   └── NotFound.jsx
-│
-├── App.jsx
-├── main.jsx
-└── index.css
-```
+
 
 ---
 
@@ -201,5 +178,5 @@ npm run dev
 ---
 
 ## Author
-
-Developed as part of a React learning project to demonstrate modern frontend development concepts.
+Kidus Girum
+Developed as part of a React learning project to demonstrate modern frontend development concepts at IBT Collage.
