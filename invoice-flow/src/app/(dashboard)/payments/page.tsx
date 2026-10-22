@@ -134,9 +134,10 @@ export default function PaymentsPage() {
       return;
     }
 
-    const newPaidAmount = paidAmount + amount;
+    const newPaidAmount = Number((paidAmount + amount).toFixed(2));
 
-    const newStatus = newPaidAmount >= invoiceTotal ? "paid" : "partial";
+    const newStatus =
+      newPaidAmount >= Number(invoiceTotal.toFixed(2)) ? "paid" : "partial";
 
     const receiptNumber = await generatePaymentReceiptNumber();
 
