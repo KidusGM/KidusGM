@@ -212,7 +212,7 @@ export default function EditProductPage() {
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm"
+                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-500"
                 required
               />
             </div>
@@ -225,7 +225,7 @@ export default function EditProductPage() {
               <select
                 value={categoryId}
                 onChange={(event) => setCategoryId(event.target.value)}
-                className="mt-2 w-full rounded-lg border bg-white px-4 py-2.5 text-sm"
+                className="mt-2 w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-slate-900"
                 required
               >
                 <option value="">Select a category</option>
@@ -246,7 +246,7 @@ export default function EditProductPage() {
               <select
                 value={unit}
                 onChange={(event) => setUnit(event.target.value)}
-                className="mt-2 w-full rounded-lg border bg-white px-4 py-2.5 text-sm"
+                className="mt-2 w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-slate-900"
                 required
               >
                 <option value="">Select a unit</option>
@@ -270,7 +270,7 @@ export default function EditProductPage() {
                 step="0.01"
                 value={price}
                 onChange={(event) => setPrice(event.target.value)}
-                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm"
+                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-500"
                 required
               />
             </div>
@@ -284,7 +284,7 @@ export default function EditProductPage() {
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 rows={4}
-                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm"
+                className="mt-2 w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
           </div>

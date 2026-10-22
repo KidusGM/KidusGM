@@ -15,11 +15,11 @@ After successful authentication, Supabase maintains the user's session using sec
 
 ## Authorization
 
-InvoiceFlow uses role-based authorization with two roles:
+InvoiceFlow uses role-based authorization with three roles and permission-based access:
 
 ### Admin
 
-Admins can access:
+Admins have access to all application modules and administrative features:
 
 - Dashboard
 - Customers
@@ -29,23 +29,28 @@ Admins can access:
 - Expenses
 - Reports
 - Settings
-- Administrative actions
+- User management
+- Role and permission management
 
-### Staff
+### Cashier
 
-Staff can access:
+Cashiers can access the modules assigned to their role, including:
 
 - Dashboard
 - Customers
-- Products
 - Invoices
 - Payments
-- Expenses
 - Reports
 
-Staff cannot access administrator-only Settings or administrator actions.
+Cashiers cannot access restricted modules such as Products, Expenses, or Settings unless those permissions are explicitly assigned.
 
-User roles are stored in the `public.profiles` table in Supabase.
+### Accountant
+
+Accountants can access the modules assigned to their role, including accounting and financial functionality.
+
+Access is controlled through the permission system rather than simply relying on the navigation menu.
+
+User roles and permissions are stored in Supabase.
 
 The profile contains:
 
@@ -54,7 +59,22 @@ The profile contains:
 - `role`
 - `created_at`
 
-The allowed roles are `admin` and `staff`.
+The supported roles are:
+
+- `admin`
+- `cashier`
+- `accountant`
+
+Application permissions include:
+
+- `dashboard`
+- `customers`
+- `products`
+- `invoices`
+- `payments`
+- `expenses`
+- `reports`
+- `settings`
 
 ## Private Routes
 
@@ -79,7 +99,7 @@ InvoiceFlow uses multiple security layers rather than relying only on hidden nav
 The proxy checks the Supabase session using:
 
 ```ts
-supabase.auth.getUser()
+supabase.auth.getUser();
 ```
 
 Unauthenticated users are prevented from accessing private application routes.
@@ -99,7 +119,7 @@ The application provides:
 `requireAdmin()` first requires an authenticated user and then checks:
 
 ```ts
-current.profile?.role !== "admin"
+current.profile?.role !== "admin";
 ```
 
 If the role is not `admin`, the action is rejected with:
@@ -108,15 +128,13 @@ If the role is not `admin`, the action is rejected with:
 throw new Error("Forbidden");
 ```
 
-### Layer 3: User interface permissions
+### Layer 3: Permission-based user interface
 
 `src/components/layout/Sidebar.tsx`
 
-The sidebar reads the authenticated user's role from the `profiles` table.
+The sidebar reads the authenticated user's permissions and displays only the navigation items available to that user.
 
-The Settings menu is displayed only when the user has the `admin` role.
-
-This improves user experience, but it is not treated as the security boundary. Server-side authorization remains the actual protection.
+This controls the user interface experience, but it is not treated as the primary security boundary. Protected server-side actions remain responsible for authorization.
 
 ## Protected Administrative Action
 
@@ -175,11 +193,11 @@ This prevents unauthenticated users from executing the protected administrative 
 
 ---
 
-### Attack 2: Staff user attempts an administrator action
+### Attack 2: Non-admin user attempts an administrator action
 
 **Test:**
 
-The Staff account `yonig759522@gmail.com` sent a POST request to:
+A non-admin account sent a POST request to:
 
 `/api/auth-test`
 
@@ -209,11 +227,35 @@ if (current.profile?.role !== "admin") {
 }
 ```
 
-The Staff user is authenticated, but does not have the `admin` role, so the action is refused.
+The user is authenticated, but does not have the `admin` role, so the action is refused.
 
 ---
 
-### Attack 3: Unsafe external redirect
+### Attack 3: Admin performs an administrator action
+
+**Test:**
+
+An authenticated administrator sent a POST request to:
+
+`/api/auth-test`
+
+**Expected result:**
+
+```text
+200 OK
+```
+
+**Actual result:**
+
+```text
+200 OK
+```
+
+The administrator is authenticated and has the required `admin` role.
+
+---
+
+### Attack 4: Unsafe external redirect
 
 **Test:**
 
@@ -243,9 +285,7 @@ The user was redirected to:
 
 ```ts
 const safeNext =
-  next && next.startsWith("/") && !next.startsWith("//")
-    ? next
-    : "/";
+  next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
 ```
 
 Only internal paths beginning with `/` are accepted. External URLs such as `https://example.com` are rejected and replaced with `/`.
@@ -254,7 +294,7 @@ This prevents an open-redirect attack.
 
 ## Direct URL Authorization Test
 
-A Staff user attempted to access:
+A non-admin user attempted to access:
 
 ```text
 /settings
@@ -272,27 +312,27 @@ The Settings page calls:
 await requireAdmin();
 ```
 
-Therefore, removing the Settings link from the Staff sidebar is only a usability feature. Direct URL access is still protected by server-side authorization.
+Therefore, removing the Settings link from a user's sidebar is only a usability feature. Direct URL access is still protected by server-side authorization.
 
 ## Security Test Summary
 
-| Security Test | Expected | Actual | Result |
-|---|---|---|---|
-| Signed-out protected action | 401 | 401 | PASS |
-| Staff performs admin action | 403 | 403 | PASS |
-| Admin performs admin action | 200 | 200 | PASS |
-| Unsafe external `next` URL | Stay inside app | `/` | PASS |
-| Staff directly opens `/settings` | Access denied | Access denied | PASS |
+| Security Test                        | Expected        | Actual        | Result |
+| ------------------------------------ | --------------- | ------------- | ------ |
+| Signed-out protected action          | 401             | 401           | PASS   |
+| Non-admin performs admin action      | 403             | 403           | PASS   |
+| Admin performs admin action          | 200             | 200           | PASS   |
+| Unsafe external `next` URL           | Stay inside app | `/`           | PASS   |
+| Non-admin directly opens `/settings` | Access denied   | Access denied | PASS   |
 
 ## Security Design Decision
 
 InvoiceFlow does not rely on client-side navigation or hidden buttons as its primary security mechanism.
 
-The security boundary is enforced server-side through:
+The security boundary is enforced through:
 
 1. Supabase authentication
 2. Route protection in `src/proxy.ts`
-3. Server-side role checks in `requireUser()` and `requireAdmin()`
-4. Database-backed user roles in `public.profiles`
+3. Server-side authorization checks
+4. Database-backed user roles and permissions in Supabase
 
-The sidebar only reflects the user's permissions in the interface.
+The sidebar reflects the user's permissions in the interface, while protected server-side actions provide the actual authorization boundary.

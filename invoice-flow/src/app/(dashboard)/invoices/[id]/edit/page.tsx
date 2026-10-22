@@ -552,7 +552,7 @@ export default function EditInvoicePage({
               <select
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
               >
                 <option value="">Select customer</option>
 
@@ -588,7 +588,7 @@ export default function EditInvoicePage({
                 type="text"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -601,7 +601,7 @@ export default function EditInvoicePage({
                 type="date"
                 value={issueDate}
                 onChange={(e) => setIssueDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -614,7 +614,7 @@ export default function EditInvoicePage({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -628,7 +628,7 @@ export default function EditInvoicePage({
                 onChange={(e) =>
                   setPaymentTerms(e.target.value as PaymentTerms)
                 }
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
               >
                 <option value="due_on_receipt">Due on Receipt</option>
 
@@ -653,7 +653,7 @@ export default function EditInvoicePage({
                 type="text"
                 value={purchaseOrderNumber}
                 onChange={(e) => setPurchaseOrderNumber(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -666,7 +666,7 @@ export default function EditInvoicePage({
                 type="text"
                 value={referenceNumber}
                 onChange={(e) => setReferenceNumber(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
           </div>
@@ -723,7 +723,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleProductChange(item.id, e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
                     >
                       <option value="">Select product</option>
 
@@ -749,7 +749,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "unit", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -766,7 +766,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "quantity", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -781,7 +781,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "description", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -798,7 +798,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "unitPrice", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -815,7 +815,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "discount", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -832,7 +832,7 @@ export default function EditInvoicePage({
                       onChange={(e) =>
                         handleItemChange(item.id, "taxRate", e.target.value)
                       }
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                     />
                   </div>
 
@@ -869,7 +869,7 @@ export default function EditInvoicePage({
                   step="any"
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                 />
               </div>
 
@@ -884,7 +884,7 @@ export default function EditInvoicePage({
                   step="any"
                   value={withholdingTax}
                   onChange={(e) => setWithholdingTax(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                 />
               </div>
 
@@ -899,7 +899,7 @@ export default function EditInvoicePage({
                   step="any"
                   value={otherCharges}
                   onChange={(e) => setOtherCharges(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                 />
               </div>
 
@@ -913,7 +913,7 @@ export default function EditInvoicePage({
                   step="any"
                   value={roundingAdjustment}
                   onChange={(e) => setRoundingAdjustment(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
                 />
               </div>
             </div>
@@ -1003,7 +1003,7 @@ export default function EditInvoicePage({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={5}
-              className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
             />
           </div>
 
@@ -1014,7 +1014,7 @@ export default function EditInvoicePage({
               value={terms}
               onChange={(e) => setTerms(e.target.value)}
               rows={5}
-              className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="mt-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
             />
           </div>
         </section>

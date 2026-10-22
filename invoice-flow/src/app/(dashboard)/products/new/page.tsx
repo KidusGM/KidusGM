@@ -151,7 +151,7 @@ export default function NewProductPage() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Product or service name"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
                 required
               />
             </div>
@@ -164,7 +164,7 @@ export default function NewProductPage() {
               <select
                 value={categoryId}
                 onChange={(event) => setCategoryId(event.target.value)}
-                className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm"
+                className="w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-slate-900"
                 required
               >
                 <option value="">Select a category</option>
@@ -185,7 +185,7 @@ export default function NewProductPage() {
               <select
                 value={unit}
                 onChange={(event) => setUnit(event.target.value)}
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900"
               >
                 {units.map((unitOption) => (
                   <option key={unitOption} value={unitOption}>
@@ -208,7 +208,7 @@ export default function NewProductPage() {
                   min="0"
                   step="0.01"
                   placeholder="0.00"
-                  className="w-full rounded-lg border px-4 py-2.5 pr-16"
+                  className="w-full rounded-lg border px-4 py-2.5 pr-16 text-slate-900 placeholder:text-slate-500"
                   required
                 />
 
@@ -228,7 +228,7 @@ export default function NewProductPage() {
                 onChange={(event) => setDescription(event.target.value)}
                 placeholder="Describe the product or service..."
                 rows={4}
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
               />
             </div>
           </div>

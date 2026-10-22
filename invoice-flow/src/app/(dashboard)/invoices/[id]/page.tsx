@@ -98,6 +98,48 @@ export default function InvoiceDetailPage({
     }
   };
 
+  const handleCancelInvoice = async () => {
+    if (!invoice) {
+      return;
+    }
+
+    if (Number(invoice.paidAmount || 0) > 0) {
+      setError(
+        "This invoice cannot be cancelled because a payment has already been recorded.",
+      );
+      return;
+    }
+
+    if (invoice.status === "cancelled") {
+      setError("This invoice has already been cancelled.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this invoice? This action cannot be undone.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const updatedInvoice: Invoice = {
+        ...invoice,
+        status: "cancelled",
+      };
+
+      await updateRecord("invoices", updatedInvoice);
+
+      setInvoice(updatedInvoice);
+      setError("");
+    } catch (cancelError) {
+      console.error("Failed to cancel invoice:", cancelError);
+
+      setError("Failed to cancel the invoice.");
+    }
+  };
+
   useEffect(() => {
     async function loadInvoice() {
       try {
@@ -144,7 +186,7 @@ export default function InvoiceDetailPage({
     );
   }
 
-  if (error || !invoice) {
+  if (!invoice) {
     return (
       <main className="p-6">
         <div className="mx-auto max-w-6xl">
@@ -193,6 +235,11 @@ export default function InvoiceDetailPage({
 
         <div className="print:hidden">
           {/* Header */}
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
             <div>
               <p className="text-sm font-medium text-slate-400">
@@ -591,6 +638,18 @@ export default function InvoiceDetailPage({
                   className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
                 >
                   Submit Invoice
+                </button>
+              </div>
+            )}
+
+            {invoice.status !== "draft" && invoice.status !== "cancelled" && (
+              <div className="flex justify-end rounded-xl border bg-white p-5">
+                <button
+                  type="button"
+                  onClick={handleCancelInvoice}
+                  className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700"
+                >
+                  Cancel Invoice
                 </button>
               </div>
             )}

@@ -64,7 +64,7 @@ export default function CustomersPage() {
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search by name, code, TIN, or phone..."
-            className="w-full rounded-lg border bg-white px-4 py-3"
+            className="w-full rounded-lg border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
           />
         </div>
 

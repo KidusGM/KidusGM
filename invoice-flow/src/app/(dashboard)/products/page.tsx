@@ -9,12 +9,33 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    Promise.all([getRecords("products"), getRecords("categories")]).then(
-      ([productRecords, categoryRecords]) => {
-        setProducts(productRecords);
-        setCategories(categoryRecords);
-      },
-    );
+    async function loadProducts() {
+      const response = await fetch("/api/auth/permissions", {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        window.location.href = "/";
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!data.permissions?.includes("products")) {
+        window.location.href = "/";
+        return;
+      }
+
+      const [productRecords, categoryRecords] = await Promise.all([
+        getRecords("products"),
+        getRecords("categories"),
+      ]);
+
+      setProducts(productRecords);
+      setCategories(categoryRecords);
+    }
+
+    loadProducts();
   }, []);
 
   const filteredProducts = products.filter((product) => {
@@ -93,7 +114,7 @@ export default function ProductsPage() {
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search products or services..."
-            className="w-full rounded-lg border bg-white px-4 py-3"
+            className="w-full rounded-lg border bg-white px-4 py-3 text-slate-900 placeholder:text-slate-500"
           />
         </div>
 

@@ -77,7 +77,7 @@ export default function NewCustomerPage() {
               onChange={(event) =>
                 setCustomerType(event.target.value as "individual" | "company")
               }
-              className="mt-1 w-full rounded-lg border px-4 py-2.5"
+              className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
             >
               <option value="individual">Individual</option>
               <option value="company">Company</option>
@@ -96,7 +96,7 @@ export default function NewCustomerPage() {
                 placeholder={
                   customerType === "company" ? "Company name" : "Full name"
                 }
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
                 required
               />
             </div>
@@ -111,7 +111,7 @@ export default function NewCustomerPage() {
                   value={tin}
                   onChange={(event) => setTin(event.target.value)}
                   placeholder="TIN number"
-                  className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                  className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
                   required
                 />
               </div>
@@ -127,7 +127,7 @@ export default function NewCustomerPage() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Email address"
                 type="email"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+               className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
               />
             </div>
 
@@ -140,7 +140,7 @@ export default function NewCustomerPage() {
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
                 placeholder="Phone number"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
               />
             </div>
 
@@ -151,7 +151,7 @@ export default function NewCustomerPage() {
                 value={city}
                 onChange={(event) => setCity(event.target.value)}
                 placeholder="City"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -164,7 +164,7 @@ export default function NewCustomerPage() {
                 value={country}
                 onChange={(event) => setCountry(event.target.value)}
                 placeholder="Country"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -177,7 +177,7 @@ export default function NewCustomerPage() {
                 value={address}
                 onChange={(event) => setAddress(event.target.value)}
                 placeholder="Street / detailed address"
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
               />
             </div>
 
@@ -192,7 +192,7 @@ export default function NewCustomerPage() {
                     value={contactPerson}
                     onChange={(event) => setContactPerson(event.target.value)}
                     placeholder="Contact person's name"
-                    className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                    className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
                   />
                 </div>
 
@@ -205,7 +205,7 @@ export default function NewCustomerPage() {
                     value={contactPhone}
                     onChange={(event) => setContactPhone(event.target.value)}
                     placeholder="Contact person's phone"
-                    className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                    className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
                   />
                 </div>
               </>
@@ -221,7 +221,7 @@ export default function NewCustomerPage() {
                 onChange={(event) => setNotes(event.target.value)}
                 placeholder="Additional notes"
                 rows={4}
-                className="mt-1 w-full rounded-lg border px-4 py-2.5"
+                className="mt-1 w-full rounded-lg border px-4 py-2.5 text-slate-900 placeholder:text-slate-500"
               />
             </div>
           </div>

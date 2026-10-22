@@ -358,25 +358,16 @@ export default function NewInvoicePage() {
 
       const newInvoice = {
         id: crypto.randomUUID(),
-
         invoiceNumber,
         invoiceType,
-
         customerId,
-
         referenceInvoiceId: invoiceType === "sales" ? "" : referenceInvoiceId,
-
         issueDate,
         dueDate,
-
         currency,
-
         purchaseOrderNumber: purchaseOrderNumber.trim(),
-
         referenceNumber: referenceNumber.trim(),
-
         items: invoiceItems,
-
         subtotal,
         discount: overallDiscount,
         tax: itemTax,
@@ -384,16 +375,11 @@ export default function NewInvoicePage() {
         otherCharges: otherChargesAmount,
         roundingAdjustment: roundingAmount,
         total,
-
         paidAmount: 0,
-
         status: "draft",
-
         paymentTerms,
-
         notes: notes.trim(),
         terms: terms.trim(),
-
         createdAt: new Date().toISOString(),
       };
 
@@ -423,8 +409,6 @@ export default function NewInvoicePage() {
         </div>
 
         <div className="space-y-6">
-          {/* Invoice Information */}
-
           <section className="rounded-xl border bg-white p-6">
             <div className="mb-5">
               <h2 className="text-lg font-semibold text-slate-900">
@@ -447,12 +431,10 @@ export default function NewInvoicePage() {
                   onChange={(event) =>
                     setInvoiceType(event.target.value as InvoiceType)
                   }
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 >
                   <option value="sales">Sales Invoice</option>
-
                   <option value="credit_note">Credit Note</option>
-
                   <option value="debit_note">Debit Note</option>
                 </select>
               </div>
@@ -465,7 +447,7 @@ export default function NewInvoicePage() {
                 <select
                   value={customerId}
                   onChange={(event) => setCustomerId(event.target.value)}
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 >
                   <option value="">Select customer</option>
 
@@ -485,12 +467,10 @@ export default function NewInvoicePage() {
                 <select
                   value={currency}
                   onChange={(event) => setCurrency(event.target.value)}
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 >
                   <option value="ETB">Ethiopian Birr (ETB)</option>
-
                   <option value="USD">US Dollar (USD)</option>
-
                   <option value="EUR">Euro (EUR)</option>
                 </select>
               </div>
@@ -504,7 +484,7 @@ export default function NewInvoicePage() {
                   type="date"
                   value={issueDate}
                   onChange={(event) => setIssueDate(event.target.value)}
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 />
               </div>
 
@@ -517,7 +497,7 @@ export default function NewInvoicePage() {
                   type="date"
                   value={dueDate}
                   onChange={(event) => setDueDate(event.target.value)}
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 />
               </div>
 
@@ -531,18 +511,13 @@ export default function NewInvoicePage() {
                   onChange={(event) =>
                     setPaymentTerms(event.target.value as PaymentTerms)
                   }
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                 >
                   <option value="due_on_receipt">Due on Receipt</option>
-
                   <option value="7_days">7 Days</option>
-
                   <option value="15_days">15 Days</option>
-
                   <option value="30_days">30 Days</option>
-
                   <option value="60_days">60 Days</option>
-
                   <option value="custom">Custom</option>
                 </select>
               </div>
@@ -559,7 +534,7 @@ export default function NewInvoicePage() {
                     setPurchaseOrderNumber(event.target.value)
                   }
                   placeholder="Optional"
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                 />
               </div>
 
@@ -573,7 +548,7 @@ export default function NewInvoicePage() {
                   value={referenceNumber}
                   onChange={(event) => setReferenceNumber(event.target.value)}
                   placeholder="Optional"
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                 />
               </div>
 
@@ -589,7 +564,7 @@ export default function NewInvoicePage() {
                     onChange={(event) =>
                       setReferenceInvoiceId(event.target.value)
                     }
-                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                    className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                   >
                     <option value="">Select original invoice</option>
 
@@ -606,8 +581,6 @@ export default function NewInvoicePage() {
               )}
             </div>
           </section>
-
-          {/* Invoice Items */}
 
           <section className="rounded-xl border bg-white p-6">
             <div className="mb-5 flex items-center justify-between gap-4">
@@ -663,7 +636,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleProductChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                       >
                         <option value="">Select product</option>
 
@@ -686,7 +659,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleDescriptionChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -701,7 +674,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleUnitChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -718,7 +691,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleQuantityChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -735,7 +708,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handlePriceChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -752,7 +725,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleItemDiscountChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -769,7 +742,7 @@ export default function NewInvoicePage() {
                         onChange={(event) =>
                           handleItemTaxRateChange(item.id, event.target.value)
                         }
-                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                        className="w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                       />
                     </div>
 
@@ -787,8 +760,6 @@ export default function NewInvoicePage() {
               ))}
             </div>
           </section>
-
-          {/* Financial Summary */}
 
           <section className="rounded-xl border bg-white p-6">
             <div className="mb-5">
@@ -814,7 +785,7 @@ export default function NewInvoicePage() {
                     step="0.01"
                     value={discount}
                     onChange={(event) => setDiscount(event.target.value)}
-                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                   />
                 </div>
 
@@ -829,7 +800,7 @@ export default function NewInvoicePage() {
                     step="0.01"
                     value={withholdingTax}
                     onChange={(event) => setWithholdingTax(event.target.value)}
-                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                   />
                 </div>
 
@@ -844,7 +815,7 @@ export default function NewInvoicePage() {
                     step="0.01"
                     value={otherCharges}
                     onChange={(event) => setOtherCharges(event.target.value)}
-                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                   />
                 </div>
 
@@ -860,7 +831,7 @@ export default function NewInvoicePage() {
                     onChange={(event) =>
                       setRoundingAdjustment(event.target.value)
                     }
-                    className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                    className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-400"
                   />
                 </div>
               </div>
@@ -941,8 +912,6 @@ export default function NewInvoicePage() {
             </div>
           </section>
 
-          {/* Notes */}
-
           <section className="rounded-xl border bg-white p-6">
             <div className="mb-5">
               <h2 className="text-lg font-semibold text-slate-900">
@@ -961,7 +930,7 @@ export default function NewInvoicePage() {
                   onChange={(event) => setNotes(event.target.value)}
                   rows={5}
                   placeholder="Additional notes for the customer..."
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                 />
               </div>
 
@@ -975,13 +944,11 @@ export default function NewInvoicePage() {
                   onChange={(event) => setTerms(event.target.value)}
                   rows={5}
                   placeholder="Payment terms, delivery terms, or other conditions..."
-                  className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+                  className="w-full rounded-lg border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
                 />
               </div>
             </div>
           </section>
-
-          {/* Actions */}
 
           <section className="rounded-xl border bg-white p-6">
             {error && (

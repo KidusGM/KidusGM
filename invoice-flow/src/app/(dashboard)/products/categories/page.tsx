@@ -78,8 +78,6 @@ export default function CategoriesPage() {
     setError("");
   }
 
-  // Check if any products are using the category before deleting it
-
   async function handleDeleteCategory(id: string) {
     const category = categories.find((item) => String(item.id) === id);
 
@@ -157,7 +155,7 @@ export default function CategoriesPage() {
               value={categoryName}
               onChange={(event) => setCategoryName(event.target.value)}
               placeholder="Enter category name"
-              className="flex-1 rounded-lg border px-4 py-2.5 text-sm outline-none focus:border-slate-400"
+              className="flex-1 rounded-lg border px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 outline-none focus:border-slate-400"
             />
 
             <button
